@@ -1,3 +1,5 @@
-# Tauri sous Windows : toolchain MSVC (pas GNU / MinGW).
+# Channel stable cross-plateforme (Windows CI / macOS CI / Linux).
+# Sur Windows en local : préfère MSVC
+#   rustup default stable-x86_64-pc-windows-msvc
 [toolchain]
-channel = "stable-x86_64-pc-windows-msvc"
+channel = "stable"

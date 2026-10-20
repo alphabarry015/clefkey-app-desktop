@@ -21,7 +21,7 @@ Le **site web et l’API Django** restent dans le dépôt principal. Ce dépôt 
 ## Prérequis (dev local)
 
 - [Node.js](https://nodejs.org/) 18+
-- [Rust](https://rustup.rs/) MSVC + Build Tools C++ (optionnel si tu builds seulement via CI)
+- [Rust](https://rustup.rs/) stable — sur Windows : toolchain **MSVC** (`rustup default stable-x86_64-pc-windows-msvc`) + Build Tools C++
 
 ## Démarrage UI (sans Tauri)
 
