@@ -92,6 +92,11 @@ bindBreachWidget($('#lp-audit'), {
 showCompatBannerIfNeeded();
 deps.restoreSessionIfAny();
 
+// Pas de bouton « Télécharger » dans l’app desktop (déjà installée).
+if (isDesktopOrIsolatedFrontend()) {
+  document.getElementById('btn-landing-download-menu')?.remove();
+}
+
 // Toast diagnostic uniquement en dev local (:1420) — pas en build prod.
 if (isDesktopOrIsolatedFrontend() && /:(1420)$/.test(window.location.host || '')) {
   const apiBase = getApiBase();

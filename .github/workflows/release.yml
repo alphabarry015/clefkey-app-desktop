@@ -84,6 +84,8 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
 
       - name: Install frontend deps
         run: npm ci
@@ -95,32 +97,32 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Build non notarisé (OK pour distribution GitHub ; Gatekeeper demandera « Ouvrir »).
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         with:
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
           releaseName: Clefkey ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
           releaseDraft: false
           prerelease: false
-          args: --bundles dmg
+          args: --bundles dmg --target aarch64-apple-darwin
 
       - name: Publish stable macOS alias
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           if [ "${{ github.ref_type }}" = "tag" ]; then
             TAG="${{ github.ref_name }}"
           else
             TAG="v${{ github.run_number }}"
           fi
-          DIR="src-tauri/target/release/bundle/dmg"
-          SRC="$(find "$DIR" -name '*.dmg' -type f | head -n 1)"
-          if [ -z "$SRC" ]; then
-            # chemins alternatifs selon arch
-            SRC="$(find src-tauri/target -path '*/bundle/dmg/*.dmg' -type f | head -n 1)"
-          fi
-          if [ -z "$SRC" ]; then
-            echo "DMG introuvable" >&2
+          SRC="$(find src-tauri/target -name '*.dmg' -type f 2>/dev/null | head -n 1 || true)"
+          if [ -z "${SRC}" ]; then
+            echo "DMG introuvable — arborescence target :" >&2
+            find src-tauri/target -type d -name bundle 2>/dev/null || true
             find src-tauri/target -name '*.dmg' 2>/dev/null || true
             exit 1
           fi
-          cp -f "$SRC" Clefkey-macOS.dmg
-          gh release upload "$TAG" Clefkey-macOS.dmg --clobber --repo "${{ github.repository }}"
+          echo "DMG source: ${SRC}"
+          cp -f "${SRC}" Clefkey-macOS.dmg
+          gh release upload "${TAG}" Clefkey-macOS.dmg --clobber --repo "${{ github.repository }}"
