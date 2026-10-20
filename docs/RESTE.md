@@ -28,7 +28,7 @@ Suivi des tâches **ouvertes**. Ce qui est déjà livré est listé en bas.
 | Build local | Quand assez d’espace disque + VS Build Tools MSVC : `npm run build` hors CI |
 | Sync frontend | Après chaque grosse MAJ du site : recopier `frontend/` (sauf `js/config.js`) + `npm run frontend:assemble` |
 | Signature code | Certificat Authenticode pour l’installeur (évite SmartScreen) |
-| macOS / Linux | Bundles Tauri supplémentaires + jobs CI (aujourd’hui Windows NSIS seulement) |
+| Linux | Bundle AppImage/deb + job CI (Windows + macOS déjà en release) |
 | Mise à jour auto | Plugin Tauri updater + endpoint releases |
 
 ## Déjà fait

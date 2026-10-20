@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Clefkey",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "identifier": "app.clefkey.desktop",
   "build": {
     "frontendDist": "../frontend",
@@ -28,7 +28,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis"],
+    "targets": ["nsis", "dmg"],
     "publisher": "Clefkey",
     "shortDescription": "Gestionnaire de mots de passe zero-knowledge",
     "longDescription": "Client desktop Clefkey — chiffrement local Argon2id + AES-GCM, API distante.",

@@ -13,7 +13,8 @@ Le **site web et l’API Django** restent dans le dépôt principal. Ce dépôt 
 | API prod | `https://clefkey.vercel.app` |
 | API dev (`:1420`) | `http://localhost:8000` |
 | Installateur Windows | CI → [Releases](https://github.com/alphabarry015/clefkey-app-desktop/releases/latest) (tag `v0.1.0`) |
-| Bouton site | « Télécharger » dans la navbar (repo Clefkey) |
+| Bouton site | Navbar → page `/download.html` (Windows + macOS) |
+| Bundles CI | Windows `Clefkey-Setup.exe` + macOS `Clefkey-macOS.dmg` |
 
 **Reste à faire** : voir [docs/RESTE.md](./docs/RESTE.md).
 

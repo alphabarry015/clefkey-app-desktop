@@ -1,5 +1,5 @@
-# Build + publie l’installateur Windows sur GitHub Releases.
-# Déclenché par un tag v* (ex. git tag v0.1.0 && git push --tags)
+# Build + publie les installateurs Windows + macOS sur GitHub Releases.
+# Déclenché par un tag v* (ex. git tag v0.1.2 && git push --tags)
 # ou manuellement via « Run workflow ».
 
 name: Release
@@ -45,17 +45,19 @@ jobs:
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
           releaseName: Clefkey ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
           releaseBody: |
-            Installateur Windows de **Clefkey** (desktop).
+            ## Clefkey Desktop
 
-            - API par défaut : `https://clefkey.vercel.app`
-            - Téléchargement direct (bouton site) :
-              `https://github.com/alphabarry015/clefkey-app-desktop/releases/latest/download/Clefkey-Setup.exe`
+            Client zero-knowledge (Windows + macOS).
+
+            - API : `https://clefkey.vercel.app`
+            - Page téléchargement : https://clefkey.vercel.app/download/
+            - Windows : `Clefkey-Setup.exe`
+            - macOS : `Clefkey-macOS.dmg`
           releaseDraft: false
           prerelease: false
           args: --bundles nsis
 
-      # Nom stable pour le bouton « Télécharger » du site (sans numéro de version dans l’URL).
-      - name: Publish stable installer alias
+      - name: Publish stable Windows alias
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
@@ -66,3 +68,59 @@ jobs:
           if (-not $src) { throw "NSIS installer introuvable dans $dir" }
           Copy-Item -Force $src.FullName "Clefkey-Setup.exe"
           gh release upload $tag "Clefkey-Setup.exe" --clobber --repo "${{ github.repository }}"
+
+  publish-macos:
+    needs: publish-windows
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Assemble frontend
+        run: npm run frontend:assemble
+
+      - name: Build Tauri (macOS)
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
+          releaseName: Clefkey ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
+          releaseDraft: false
+          prerelease: false
+          args: --bundles dmg
+
+      - name: Publish stable macOS alias
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG="v${{ github.run_number }}"
+          fi
+          DIR="src-tauri/target/release/bundle/dmg"
+          SRC="$(find "$DIR" -name '*.dmg' -type f | head -n 1)"
+          if [ -z "$SRC" ]; then
+            # chemins alternatifs selon arch
+            SRC="$(find src-tauri/target -path '*/bundle/dmg/*.dmg' -type f | head -n 1)"
+          fi
+          if [ -z "$SRC" ]; then
+            echo "DMG introuvable" >&2
+            find src-tauri/target -name '*.dmg' 2>/dev/null || true
+            exit 1
+          fi
+          cp -f "$SRC" Clefkey-macOS.dmg
+          gh release upload "$TAG" Clefkey-macOS.dmg --clobber --repo "${{ github.repository }}"
