@@ -6,8 +6,8 @@ Suivi des tâches **ouvertes**. Ce qui est déjà livré est listé en bas.
 
 | Tâche | Détail |
 |-------|--------|
-| Vérifier la release CI | Tag `v0.1.0` poussé ; confirmer que GitHub Actions a publié l’`.exe` NSIS sur [Releases](https://github.com/alphabarry015/clefkey-app-desktop/releases/latest) |
-| Description de release | Coller les notes (passphrase, MDP min. 8, soft-lock, lien WebView2) sur la page Release si le body auto est trop sommaire |
+| Vérifier la release CI | Confirmer l’asset stable `Clefkey-Setup.exe` sur [Releases](https://github.com/alphabarry015/clefkey-app-desktop/releases/latest) (téléchargement direct du bouton site) |
+| Repo public | Le dépôt desktop doit être **public** pour le download anonyme |
 | Redeploy site (Vercel) | Déployer le repo [Clefkey](https://github.com/alphabarry015/Clefkey) pour activer le bouton **Télécharger** + CORS Tauri en prod |
 | Tester l’installeur | Installer l’`.exe` sur une machine Windows propre, login contre `https://clefkey.vercel.app` |
 

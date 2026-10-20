@@ -37,7 +37,15 @@ git tag v0.1.1   # ou version suivante
 git push origin v0.1.1
 ```
 
-Le workflow `.github/workflows/release.yml` construit l’installeur NSIS et l’attache à la [Release](https://github.com/alphabarry015/clefkey-app-desktop/releases).
+Le workflow `.github/workflows/release.yml` construit l’installeur NSIS et publie aussi l’alias stable **`Clefkey-Setup.exe`**.
+
+Téléchargement direct (bouton site, sans page Releases) :
+
+```text
+https://github.com/alphabarry015/clefkey-app-desktop/releases/latest/download/Clefkey-Setup.exe
+```
+
+Le dépôt doit être **public** pour que le téléchargement anonyme fonctionne.
 
 ### URL de l’API
 

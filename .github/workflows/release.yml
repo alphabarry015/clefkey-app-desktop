@@ -48,7 +48,21 @@ jobs:
             Installateur Windows de **Clefkey** (desktop).
 
             - API par défaut : `https://clefkey.vercel.app`
-            - Téléchargement : assets ci-dessous (NSIS / MSI)
+            - Téléchargement direct (bouton site) :
+              `https://github.com/alphabarry015/clefkey-app-desktop/releases/latest/download/Clefkey-Setup.exe`
           releaseDraft: false
           prerelease: false
           args: --bundles nsis
+
+      # Nom stable pour le bouton « Télécharger » du site (sans numéro de version dans l’URL).
+      - name: Publish stable installer alias
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          $tag = if ("${{ github.ref_type }}" -eq "tag") { "${{ github.ref_name }}" } else { "v${{ github.run_number }}" }
+          $dir = "src-tauri/target/release/bundle/nsis"
+          $src = Get-ChildItem -Path $dir -Filter "*setup.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $src) { throw "NSIS installer introuvable dans $dir" }
+          Copy-Item -Force $src.FullName "Clefkey-Setup.exe"
+          gh release upload $tag "Clefkey-Setup.exe" --clobber --repo "${{ github.repository }}"
