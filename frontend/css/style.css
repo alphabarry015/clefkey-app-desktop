@@ -1,0 +1,21 @@
+/* Clefkey — barrel de repli (les pages chargent les feuilles en parallèle). */
+@import url('./base-p1.css');
+@import url('./base-p2.css');
+@import url('./vault-layout-a-p1.css');
+@import url('./vault-layout-a-p2.css');
+@import url('./vault-layout-b-p1.css');
+@import url('./vault-layout-b-p2.css');
+@import url('./vault-nav-p1.css');
+@import url('./vault-nav-p2.css');
+@import url('./vault-profile-a.css');
+@import url('./vault-profile-b.css');
+@import url('./vault-content-a.css');
+@import url('./vault-content-b.css');
+@import url('./overlays-a.css');
+@import url('./overlays-b.css');
+@import url('./landing-a.css');
+@import url('./landing-b.css');
+@import url('./breach-switch.css');
+@import url('./responsive-a.css');
+@import url('./responsive-b.css');
+@import url('./vault-ds.css');

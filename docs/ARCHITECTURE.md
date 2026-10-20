@@ -1,0 +1,79 @@
+# Architecture — Clefkey.
+
+## Vue d’ensemble
+
+```
+Navigateur (frontend/)
+  ├─ UI (HTML / CSS / JS)
+  ├─ WebCrypto + Argon2 (dérivation de clés, AES-GCM)
+  └─ api.js → HTTP JSON
+         │
+         ▼
+Django (coffre/ + vault/)  ──JWT──► PostgreSQL (Supabase)
+  ├─ Auth (register / login / me / recovery)
+  ├─ Entrées (blobs chiffrés) + shares
+  ├─ Favicon proxy (anti-SSRF)
+  └─ Rate limit (Upstash en prod)
+```
+
+Récit détaillé des concepts et flux : [CARTOGRAPHIE-COFFRE.md](./CARTOGRAPHIE-COFFRE.md).
+
+## Stack
+
+| Couche | Techno |
+|--------|--------|
+| Backend | Django 5+ / 6, WSGI (`coffre.wsgi`) |
+| Frontend | Vanilla JS (modules ES), CSS, PWA |
+| Base | PostgreSQL via Supabase (ou SQLite en local sans `DATABASE_URL`) |
+| Auth | JWT Bearer (Django), **pas** Supabase Auth |
+| Rate limit | Upstash Redis REST (obligatoire sur Vercel) |
+| Hébergement prod | Vercel (fonction Python) + Supabase |
+
+## Dossiers
+
+```
+coffre/           # Settings, URLs racine, WSGI
+vault/            # Modèles, vues API, recovery, shares, favicon
+frontend/         # index.html, css/, js/, icons/, sw.js, manifest
+supabase/         # schema.sql, exemples d’env Vercel (placeholders)
+scripts/          # Génération icônes PWA, vendor, sync listes
+cli/              # Client CLI optionnel
+backend/          # Archive FastAPI (non utilisée)
+docs/             # Cette documentation
+```
+
+Secrets : uniquement via variables d’environnement (fichier `.env` local gitignoré, dashboard Vercel en prod). Jamais de valeurs réelles dans les fichiers versionnés (dépôt public).
+
+## Flux crypto (simplifié)
+
+1. **Inscription** : le client dérive (Argon2id) un matériel d’auth et une clé de coffre, génère une paire de clés, chiffre la vault key et la clé privée, crée un **wrap passphrase** (sel + vérificateur + vault key chiffrée par la passphrase), enregistre 7 paquets de recovery, envoie les blobs + `auth_verifier`.
+2. **Connexion** : salt (éventuellement factice) → dérivation du verifier → JWT si OK → déchiffrement local de la vault key (maître). Les blobs passphrase sont renvoyés pour le soft-lock ultérieur.
+3. **Soft-lock** : clés en clair effacées ; redéchiffrement via **passphrase** *ou* **maître** (même `vaultKey`).
+4. **Entrées** : JSON clair (titre, type `login`|`oauth`|`api_key`|`ssh_key`, username, password, notes, URL) chiffré AES-GCM ; la base ne stocke que `encrypted_data` (BYTEA).
+5. **Recovery** : preuve scellée côté serveur (HMAC) — reset maître (`/auth/recovery/complete`) ou passphrase (`/auth/recovery/passphrase`) ; la clé utilisée est invalidée.
+
+## Tables principales
+
+| Table | Rôle |
+|-------|------|
+| `users` | Compte + matériel crypto (salt, verifier, clés chiffrées, **passphrase_***, recovery) |
+| `vault_entries` | Entrées du coffre (`encrypted_data`, `owner_id`) |
+| `vault_recovery_keys` | 7 wraps de vault key + vérificateurs (une clé consommée par reset) |
+| tables shares | Partages d’entrées (blobs / métadonnées non sensibles en clair) |
+
+Schéma SQL de référence : `supabase/schema.sql`.
+
+## Frontend
+
+- UI vanilla dans `frontend/` (HTML / CSS / modules ES)
+- Modules notables : `crypto.js`, `passphrase.js`, `master-password.js`, `session.js`, `auth-screens.js`, `recovery-input.js`, `app.js`, `api.js`, `vault-views.js`, `generator.js`, `shortcuts.js`
+- Session : `IDLE_TIMEOUT_MS` = 15 min (hard logout) ; `HIDDEN_LOCK_MS` = 5 min (soft-lock)
+- Crypto & icônes **vendored** dans `frontend/vendor/` (pas de CDN)
+- Listes SecLists (sélection) : `frontend/data/` + chargement 2 phases
+- Sync listes : `python scripts/sync_common_password_lists.py`
+- Régénération vendor : `python scripts/vendor_frontend_deps.py`
+- Archive : `backend/` (FastAPI) n’est **pas** déployé
+
+## Mode développement UI
+
+`frontend/js/dev.js` : sur localhost, bypass API avec des entrées mock **fictives**. Inactif hors localhost (sauf `?dev=1`). Aucune clé réelle dans ces mocks.

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var key = 'clefkey_theme';
+        var pref = localStorage.getItem(key) || 'system';
+        if (pref !== 'light' && pref !== 'dark' && pref !== 'system') pref = 'system';
+        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var resolved = pref === 'system' ? (dark ? 'dark' : 'light') : pref;
+        document.documentElement.setAttribute('data-theme-pref', pref);
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.style.backgroundColor = resolved === 'dark' ? '#111111' : '#ffffff';
+      } catch (e) {}
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Gestionnaire de mots de passe chiffré de bout en bout">
+  <meta name="theme-color" content="#111111">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Clefkey.">
+  <title>Clefkey.</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon-mark.png?v=268" type="image/png">
+  <link rel="icon" href="/favicon.ico?v=268" sizes="any">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=268">
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/base-p1.css">
+  <link rel="stylesheet" href="/css/base-p2.css">
+  <link rel="stylesheet" href="/css/vault-layout-a-p1.css">
+  <link rel="stylesheet" href="/css/vault-layout-a-p2.css">
+  <link rel="stylesheet" href="/css/vault-layout-b-p1.css">
+  <link rel="stylesheet" href="/css/vault-layout-b-p2.css">
+  <link rel="stylesheet" href="/css/vault-nav-p1.css">
+  <link rel="stylesheet" href="/css/vault-nav-p2.css">
+  <link rel="stylesheet" href="/css/vault-profile-a.css">
+  <link rel="stylesheet" href="/css/vault-profile-b.css">
+  <link rel="stylesheet" href="/css/vault-content-a.css">
+  <link rel="stylesheet" href="/css/vault-content-b.css">
+  <link rel="stylesheet" href="/css/overlays-a.css">
+  <link rel="stylesheet" href="/css/overlays-b.css">
+  <link rel="stylesheet" href="/css/landing-a.css">
+  <link rel="stylesheet" href="/css/landing-b.css">
+  <link rel="stylesheet" href="/css/breach-switch.css">
+  <link rel="stylesheet" href="/css/responsive-a.css">
+  <link rel="stylesheet" href="/css/responsive-b.css">
+  <link rel="stylesheet" href="/css/vault-ds.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+

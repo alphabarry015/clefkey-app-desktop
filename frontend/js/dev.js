@@ -1,0 +1,159 @@
+/** Mode développement — accès direct au design sans connexion réelle */
+
+import { normalizeEntryUrl } from './favicon.js';
+
+const urlParams = new URLSearchParams(window.location.search);
+const devParam = urlParams.get('dev');
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+export const DEV_MODE = devParam === '0' ? false : (devParam === '1' || isLocal);
+
+export const MOCK_FOLDERS = [
+  { id: 'dev-folder-perso', name: 'Perso' },
+  { id: 'dev-folder-pro', name: 'Travail' },
+];
+
+export const MOCK_ENTRIES = [
+  {
+    id: 'dev-1',
+    type: 'login',
+    title: 'Netflix',
+    username: 'couple@email.com',
+    password: 'DEMO-not-a-real-password-01',
+    url: 'https://netflix.com',
+    notes: 'Compte familial',
+    folderId: 'dev-folder-perso',
+  },
+  {
+    id: 'dev-2',
+    type: 'login',
+    title: 'Gmail',
+    username: 'pierre@email.com',
+    password: 'DEMO-not-a-real-password-02',
+    url: 'https://mail.google.com',
+    notes: '',
+    folderId: 'dev-folder-perso',
+  },
+  {
+    id: 'dev-3',
+    type: 'login',
+    title: 'Banque Populaire',
+    username: '12345678901',
+    password: 'DEMO-not-a-real-password-03',
+    url: 'https://www.banquepopulaire.fr',
+    notes: 'DEMO — code carte fictif',
+  },
+  {
+    id: 'dev-4',
+    type: 'api_key',
+    title: 'OpenAI',
+    username: 'org-demo',
+    password: 'demo-openai-key-not-real',
+    url: 'https://platform.openai.com',
+    notes: 'Factice — ne jamais committer de vraie clé',
+    folderId: 'dev-folder-pro',
+  },
+  {
+    id: 'dev-5',
+    type: 'api_key',
+    title: 'Stripe',
+    username: '',
+    password: 'demo-stripe-key-not-real',
+    url: 'https://dashboard.stripe.com',
+    notes: 'Factice — environnement test',
+    folderId: 'dev-folder-pro',
+  },
+  {
+    id: 'dev-6',
+    type: 'ssh_key',
+    title: 'GitHub deploy',
+    username: 'deploy@github',
+    password: 'DEMO-SSH-KEY-NOT-REAL',
+    url: 'git@github.com',
+    notes: 'Factice — ssh-ed25519 AAAA… (exemple)',
+    folderId: 'dev-folder-pro',
+  },
+  {
+    id: 'dev-7',
+    type: 'oauth',
+    title: 'Google',
+    username: 'pierre@email.com',
+    password: '',
+    url: 'https://accounts.google.com',
+    notes: 'https://www.youtube.com — Se connecter avec Google',
+    folderId: 'dev-folder-perso',
+  },
+  {
+    id: 'dev-8',
+    type: 'oauth',
+    title: 'GitHub',
+    username: 'pierre-dev',
+    password: '',
+    url: 'https://github.com/login',
+    notes: 'https://vercel.com — Connexion sociale GitHub',
+    folderId: 'dev-folder-pro',
+  },
+];
+
+export function enterDevMode(state) {
+  state.devMode = true;
+  state.token = 'dev-token';
+  state.user = {
+    id: 'dev-user',
+    email: 'pierre@dev.local',
+    first_name: 'Pierre',
+    middle_name: 'Jean',
+    last_name: 'Dupont',
+    display_name: 'Pierre Jean Dupont',
+  };
+  state.vaultKey = null;
+  state.privateKey = null;
+  state.publicKey = null;
+  state.folders = MOCK_FOLDERS.map((f) => ({ ...f }));
+  state.foldersMetaEntryId = 'dev-folders-meta';
+  state.folderFilter = 'all';
+  state.entries = MOCK_ENTRIES.map((e, i) => ({
+    ...e,
+    url: normalizeEntryUrl(e.url),
+    created_at: e.created_at || `2026-01-${String(10 + i).padStart(2, '0')}T10:00:00.000Z`,
+    updated_at: e.updated_at || `2026-03-${String(1 + i).padStart(2, '0')}T14:30:00.000Z`,
+  }));
+}
+
+export function createDevEntry(entries, data) {
+  const now = new Date().toISOString();
+  const entry = {
+    id: `dev-${Date.now()}`,
+    ...data,
+    url: (data.url || '').trim() ? normalizeEntryUrl(data.url) : '',
+    created_at: now,
+    updated_at: now,
+  };
+  entries.unshift(entry);
+  return entry;
+}
+
+export function updateDevEntry(entries, id, data) {
+  const index = entries.findIndex((e) => e.id === id);
+  if (index === -1) return null;
+  const existing = entries[index];
+  const updated = {
+    ...existing,
+    ...data,
+    url: (data.url || '').trim() ? normalizeEntryUrl(data.url) : '',
+    updated_at: new Date().toISOString(),
+  };
+  entries[index] = updated;
+  return updated;
+}
+
+export function deleteDevEntry(entries, id) {
+  const index = entries.findIndex((e) => e.id === id);
+  if (index === -1) return null;
+  const [removed] = entries.splice(index, 1);
+  return removed;
+}
+
+export function shouldUseDevBypass(email, master) {
+  return DEV_MODE && !email && !master;
+}

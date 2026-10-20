@@ -1,0 +1,76 @@
+# Clefkey. — App desktop
+
+Client **desktop** (Tauri 2 / Rust) du gestionnaire de mots de passe [Clefkey](https://github.com/alphabarry015/Gardefort).
+
+Le **site web et l’API Django** restent dans le dépôt principal. Ce dépôt contient l’UI client et le shell natif.
+
+## État actuel
+
+| Élément | Statut |
+|---------|--------|
+| `frontend/` | Aligné site (passphrase, MDP min. 8, soft-lock) |
+| Shell Tauri (`src-tauri/`) | Initialisé (Tauri 2, bundle NSIS) |
+| API prod | `https://clefkey.vercel.app` |
+| API dev (`:1420`) | `http://localhost:8000` |
+| Installateur Windows | Via GitHub Actions → [Releases](https://github.com/alphabarry015/clefkey-app-desktop/releases/latest) |
+| Bouton site | « Télécharger » dans la navbar landing (repo Gardefort) |
+
+## Prérequis (dev local)
+
+- [Node.js](https://nodejs.org/) 18+
+- [Rust](https://rustup.rs/) MSVC + Build Tools C++ (optionnel si tu builds seulement via CI)
+
+## Démarrage UI (sans Tauri)
+
+```bash
+npm install
+npm run frontend:serve
+# → http://localhost:1420  (API locale :8000)
+```
+
+## Publier un installateur (recommandé : CI)
+
+Le disque local est souvent trop juste pour MSVC. Utiliser GitHub Actions :
+
+```bash
+git add -A && git commit -m "…"
+git push -u origin main
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+Le workflow `.github/workflows/release.yml` construit l’installeur NSIS Windows et l’attache à la [Release](https://github.com/alphabarry015/clefkey-app-desktop/releases).
+
+Le bouton **Télécharger** du site pointe vers :
+`https://github.com/alphabarry015/clefkey-app-desktop/releases/latest`
+
+### URL de l’API
+
+| Contexte | Base API |
+|----------|----------|
+| Build / app installée | `https://clefkey.vercel.app` |
+| `npm run frontend:serve` (:1420) | `http://localhost:8000` |
+| Override | `localStorage.setItem('clefkey_api_base', '…')` puis reload |
+
+CORS : le site Django autorise les origines Tauri en prod ; en `DEBUG`, aussi `:1420`.
+
+## Contenu
+
+```
+frontend/                 # UI (WebView)
+src-tauri/                # Shell Rust / Tauri 2
+.github/workflows/        # Release Windows
+scripts/assemble-frontend.mjs
+```
+
+## Prochaines étapes produit
+
+1. ~~Sync passphrase / MDP 8 / verrouillage~~
+2. ~~Bouton Télécharger (site)~~
+3. ~~Pipeline release NSIS~~
+4. Pousser le tag `v0.1.0` pour publier le premier `.exe`
+5. Tray, presse-papiers volatile, keyring OS, icônes produit
+
+## Licence
+
+MIT — voir [LICENSE](./LICENSE).

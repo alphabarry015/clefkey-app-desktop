@@ -1,0 +1,49 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "Clefkey",
+  "version": "0.1.0",
+  "identifier": "app.clefkey.desktop",
+  "build": {
+    "frontendDist": "../frontend",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm run frontend:serve",
+    "beforeBuildCommand": "npm run frontend:assemble"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Clefkey",
+        "width": 1100,
+        "height": 750,
+        "minWidth": 800,
+        "minHeight": 560,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' https://clefkey.vercel.app http://127.0.0.1:8000 http://localhost:8000 https://api.pwnedpasswords.com https://api.xposedornot.com; img-src 'self' data: blob: https: http://127.0.0.1:8000 http://localhost:8000 https://clefkey.vercel.app; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    },
+    "withGlobalTauri": false
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "publisher": "Clefkey",
+    "shortDescription": "Gestionnaire de mots de passe zero-knowledge",
+    "longDescription": "Client desktop Clefkey — chiffrement local Argon2id + AES-GCM, API distante.",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["French", "English"]
+      }
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

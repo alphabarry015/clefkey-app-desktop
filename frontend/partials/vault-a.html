@@ -1,0 +1,347 @@
+  <!-- ── Écran Coffre ───────────────────────────────── -->
+  <div id="screen-vault" class="screen sidebar-expanded">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <img class="sidebar-logo" src="/icons/icon-mark.png?v=268" width="36" height="36" alt="">
+        <div class="sidebar-brand-text">
+          <div class="sidebar-title">Clefkey.</div>
+          <div class="sidebar-subtitle">Gestionnaire sécurisé</div>
+        </div>
+      </div>
+
+      <button id="btn-add-sidebar" class="sidebar-add-btn" title="Nouvelle clé">
+                <i data-lucide="plus"></i><span class="sidebar-text">Nouvelle clé</span>
+      </button>
+
+      <nav class="sidebar-nav">
+        <div class="nav-selector" aria-hidden="true"></div>
+        <div class="sidebar-section-label">Navigation</div>
+        <button class="nav-item active" data-page="dashboard" title="Dashboard">
+                    <i data-lucide="layout-dashboard"></i><span class="sidebar-text">Dashboard</span>
+        </button>
+        <button class="nav-item" data-page="vault" title="Toutes les clés">
+                    <i data-lucide="key-square"></i><span class="sidebar-text">Toutes les clés</span>
+          <span class="nav-badge" id="nav-count-all">0</span>
+        </button>
+        <button class="nav-item" data-page="projects" title="Projets">
+                    <i data-lucide="layers"></i><span class="sidebar-text">Projets</span>
+          <span class="nav-badge" id="nav-count-projects">0</span>
+        </button>
+        <button class="nav-item" data-page="audit" title="Audit">
+                    <i data-lucide="shield-check"></i><span class="sidebar-text">Audit</span>
+        </button>
+        <button class="nav-item" data-page="generator" title="Générateur">
+                    <i data-lucide="dices"></i><span class="sidebar-text">Générateur</span>
+        </button>
+
+        <div class="sidebar-section-label">Partage</div>
+        <button class="nav-item nav-item-sub" data-page="shares-received" title="Partages reçus">
+                    <i data-lucide="mail"></i><span class="sidebar-text">Reçu</span>
+          <span class="nav-badge" id="nav-count-received">0</span>
+        </button>
+        <button class="nav-item nav-item-sub" data-page="shares-sent" title="Partages envoyés">
+                    <i data-lucide="users"></i><span class="sidebar-text">Envoyé</span>
+          <span class="nav-badge" id="nav-count-sent">0</span>
+        </button>
+        <button class="nav-item nav-item-sub" data-page="contacts" title="Contacts">
+                    <i data-lucide="id-card"></i><span class="sidebar-text">Contacts</span>
+          <span class="nav-badge" id="nav-count-contacts">0</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="btn-lock" class="sidebar-lock-btn" title="Verrouiller le coffre">
+                    <i data-lucide="log-out"></i><span class="sidebar-text">Verrouiller</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="vault-layout">
+      <header class="vault-topbar">
+        <img class="topbar-logo" src="/icons/icon-mark.png?v=268" width="32" height="32" alt="">
+        <button id="btn-menu" class="btn-menu" aria-label="Ouvrir le menu" title="Menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="topbar-title">
+          <h1 id="page-title">Dashboard</h1>
+          <p id="page-subtitle" class="topbar-subtitle"></p>
+        </div>
+        <div class="topbar-actions">
+          <div class="theme-switch-host topbar-theme" data-theme-switch></div>
+          <button
+            type="button"
+            id="btn-profile-sidebar"
+            class="sidebar-user topbar-user"
+            title="Mon profil"
+            aria-label="Mon profil"
+          >
+            <div id="user-avatar" class="user-avatar" title=""></div>
+          </button>
+        </div>
+      </header>
+
+      <main class="vault-main">
+        <div id="dashboard-view" class="dashboard-view">
+          <section class="dash-stats" aria-label="Aperçu">
+            <div id="dash-stats-grid" class="dash-stats-grid"></div>
+          </section>
+
+          <section class="dash-insights" aria-label="Analyse">
+            <div class="dash-insight-card">
+              <h3 class="dash-insight-title">Clés par type</h3>
+              <div id="dash-graph-types" class="dash-graph"></div>
+            </div>
+            <div class="dash-insight-card">
+              <h3 class="dash-insight-title">Clés par projet</h3>
+              <div id="dash-graph-projects" class="dash-graph"></div>
+            </div>
+          </section>
+        </div>
+
+        <div id="vault-view" class="vault-view hidden">
+        <div class="vault-toolbar">
+          <div class="vault-filter-combo dash-filter-combo" aria-label="Filtres">
+            <div class="dash-filter-group">
+              <span class="dash-filter-caption">Type</span>
+              <div class="type-filters dash-type-filters" role="group" aria-label="Filtrer par type">
+                <button type="button" class="type-filter active" data-type-filter="all">Tous</button>
+                <button type="button" class="type-filter" data-type-filter="login">Connexions</button>
+                <button type="button" class="type-filter" data-type-filter="oauth">OAuth</button>
+                <button type="button" class="type-filter" data-type-filter="api_key">API</button>
+                <button type="button" class="type-filter" data-type-filter="ssh_key">SSH</button>
+              </div>
+            </div>
+            <div class="dash-filter-sep" aria-hidden="true"></div>
+            <div class="dash-filter-group">
+              <span class="dash-filter-caption">Projet</span>
+              <div class="folder-filters dash-folder-filters" role="group" aria-label="Filtrer par projet">
+                <button type="button" class="folder-filter active" data-folder-filter="all">Tous</button>
+                <button type="button" class="folder-filter" data-folder-filter="none">Sans</button>
+                <span id="vault-folder-filter-list" class="folder-filter-list"></span>
+              </div>
+            </div>
+          </div>
+          <div class="vault-toolbar-row">
+          <div class="search-box">
+            <span class="search-icon"><i data-lucide="search"></i></span>
+            <input type="text" id="search-input" placeholder="Rechercher un site, identifiant...">
+            <button id="btn-clear-search" class="btn-clear hidden" aria-label="Effacer"><i data-lucide="x"></i></button>
+          </div>
+          <div class="vault-view-toggle" role="group" aria-label="Format d'affichage">
+            <button
+              type="button"
+              class="view-mode-btn active"
+              data-view-mode="grid"
+              title="Vue cartes"
+              aria-label="Vue cartes"
+            >
+              <i data-lucide="layout-dashboard"></i>
+            </button>
+            <button type="button" class="view-mode-btn" data-view-mode="list" title="Vue liste" aria-label="Vue liste">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          </div>
+        </div>
+
+        <div class="vault-content">
+          <div id="entries-list" class="dash-tiles-grid"></div>
+          <div id="entries-empty" class="entries-empty hidden">
+            <div class="empty-illustration">
+                          </div>
+            <h3>Aucune clé</h3>
+            <p>Commencez par ajouter votre première clé sécurisée</p>
+            <button type="button" class="btn btn-primary" id="btn-entries-empty-add">
+                            <span class="add-entry-label">Ajouter une clé</span>
+            </button>
+          </div>
+          <div id="entries-no-results" class="entries-empty hidden">
+            <div class="empty-illustration empty-illustration-sm">
+              <i data-lucide="search-x"></i>
+            </div>
+            <h3>Aucun résultat</h3>
+            <p>Essayez un autre terme de recherche</p>
+          </div>
+        </div>
+        </div>
+
+        <div id="projects-view" class="projects-view hidden">
+          <form id="form-project-page-create" class="projects-create" autocomplete="off">
+            <label class="sr-only" for="project-page-new-name">Nom du projet</label>
+            <input
+              type="text"
+              id="project-page-new-name"
+              maxlength="80"
+              placeholder="Nom du projet (ex. Perso, Travail…)"
+              required
+            >
+            <button type="submit" class="btn btn-primary" id="btn-project-page-create">
+                            <span>Créer</span>
+            </button>
+          </form>
+
+          <div class="projects-section">
+            <div class="projects-section-head">
+              <h2 class="projects-section-title">Projets</h2>
+              <div class="projects-section-tools">
+                <span id="projects-count-label" class="projects-section-count">0</span>
+                <div class="vault-view-toggle" role="group" aria-label="Format d'affichage des projets">
+                  <button
+                    type="button"
+                    class="view-mode-btn"
+                    data-projects-view="grid"
+                    title="Vue cartes"
+                    aria-label="Vue cartes"
+                  >
+                    <i data-lucide="layout-dashboard"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="view-mode-btn"
+                    data-projects-view="list"
+                    title="Vue liste"
+                    aria-label="Vue liste"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <line x1="8" y1="6" x2="21" y2="6"></line>
+                      <line x1="8" y1="12" x2="21" y2="12"></line>
+                      <line x1="8" y1="18" x2="21" y2="18"></line>
+                      <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                      <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                      <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="projects-grid" class="projects-list" role="list"></div>
+            <div id="projects-empty" class="projects-empty hidden">
+              <div class="projects-empty-icon"></div>
+              <h3>Aucun projet pour l’instant</h3>
+              <p>Créez un projet ci-dessus pour regrouper vos clés.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="project-detail-view" class="project-detail-view hidden">
+          <div class="project-detail-top">
+            <button type="button" id="btn-project-detail-back" class="btn btn-ghost btn-sm project-detail-back">
+              <i data-lucide="arrow-left"></i>
+              <span>Projets</span>
+            </button>
+            <div class="project-detail-heading">
+              <span id="project-detail-avatar" class="project-detail-avatar" aria-hidden="true">P</span>
+              <div class="project-detail-heading-text">
+                <h2 id="project-detail-name">Projet</h2>
+                <p id="project-detail-meta" class="project-detail-meta">0 clé</p>
+              </div>
+              <div class="project-detail-heading-actions">
+                <button
+                  type="button"
+                  id="btn-project-detail-subproject"
+                  class="btn btn-ghost btn-sm"
+                  title="Créer un sous-projet"
+                >
+                                    <span>Sous-projet</span>
+                </button>
+                <button
+                  type="button"
+                  id="btn-project-detail-move"
+                  class="btn btn-ghost btn-sm"
+                  title="Déplacer ce projet"
+                >
+                  <i data-lucide="arrow-right"></i>
+                  <span>Déplacer</span>
+                </button>
+                <button
+                  type="button"
+                  id="btn-project-detail-rename"
+                  class="btn btn-ghost btn-sm"
+                  title="Renommer ce projet"
+                >
+                  <i data-lucide="pencil"></i>
+                  <span>Renommer</span>
+                </button>
+                <button
+                  type="button"
+                  id="btn-project-detail-transfer"
+                  class="btn btn-secondary btn-sm"
+                  title="Transférer des clés"
+                >
+                                    <span>Transférer</span>
+                </button>
+                <button type="button" id="btn-project-detail-add" class="btn btn-primary btn-sm">
+                                    <span>Ajouter</span>
+                </button>
+              </div>
+            </div>
+            <div id="project-detail-select-bar" class="project-detail-select-bar hidden">
+              <label class="project-detail-select-all">
+                <input type="checkbox" id="project-detail-select-all">
+                <span>Tout sélectionner</span>
+              </label>
+              <span id="project-detail-selection-count" class="project-detail-selection-count">0 sélectionnée</span>
+              <button type="button" id="btn-project-detail-select-clear" class="btn btn-ghost btn-sm">Annuler</button>
+            </div>
+            <div class="search-box project-detail-search">
+              <span class="search-icon"><i data-lucide="search"></i></span>
+              <input type="text" id="project-detail-search-input" placeholder="Rechercher dans ce projet…">
+              <button type="button" id="btn-clear-project-detail-search" class="btn-clear hidden" aria-label="Effacer">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </div>
+          <div id="project-detail-list" class="entries-grid"></div>
+          <div id="project-detail-empty" class="projects-empty hidden">
+            <div class="projects-empty-icon"><i data-lucide="key-round"></i></div>
+            <h3 id="project-detail-empty-title">Aucune clé</h3>
+            <p id="project-detail-empty-text">Ajoutez une clé à ce projet pour commencer.</p>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-project-detail-add-empty">
+                            <span>Ajouter une clé</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="shares-received-view" class="shares-view hidden">
+          <div class="shares-toolbar">
+            <p class="shares-hint">Clés que d’autres utilisateurs vous ont envoyées.</p>
+          </div>
+          <div id="shares-received-list" class="entries-grid"></div>
+          <div id="shares-received-empty" class="entries-empty hidden">
+            <div class="empty-illustration empty-illustration-sm">
+                          </div>
+            <h3>Aucun partage reçu</h3>
+            <p>Quand quelqu’un partage une clé avec vous, elle apparaît ici.</p>
+          </div>
+        </div>

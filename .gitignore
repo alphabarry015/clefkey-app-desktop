@@ -1,0 +1,32 @@
+# Secrets / env
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Éditeurs
+.idea/
+.vscode/
+*.swp
+*~
+
+# Node
+node_modules/
+npm-debug.log*
+dist/
+build/
+package-lock.json.bak
+
+# Rust / Tauri
+target/
+src-tauri/target/
+*.pdb
+
+# Logs / caches
+*.log
+.cache/
+__pycache__/

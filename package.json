@@ -1,0 +1,19 @@
+{
+  "name": "clefkey-app-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Client desktop Clefkey (Tauri)",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "tauri": "tauri",
+    "frontend:assemble": "node scripts/assemble-frontend.mjs",
+    "frontend:serve": "npm run frontend:assemble && npx --yes serve frontend -p 1420 --no-port-switching"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2"
+  }
+}
