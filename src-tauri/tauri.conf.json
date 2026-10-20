@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Clefkey",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "identifier": "app.clefkey.desktop",
   "build": {
     "frontendDist": "../frontend",
@@ -35,11 +35,14 @@
     "windows": {
       "nsis": {
         "installMode": "currentUser",
-        "languages": ["French", "English"]
+        "languages": ["French", "English"],
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico"
       }
     },
     "icon": [
       "icons/32x32.png",
+      "icons/64x64.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
