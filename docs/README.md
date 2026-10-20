@@ -17,4 +17,6 @@ L’API cible reste celle du site Clefkey en production (ou un serveur local Dja
 
 1. Django (repo site) sur `http://localhost:8000` avec `DEBUG=true` (CORS desktop activé).
 2. Dans ce repo : `npm run frontend:serve` → `http://localhost:1420`
-3. Un toast confirme `/health/` au chargement. Override : `localStorage.clefkey_api_base`.
+3. Un toast confirme `/health/` au chargement (dev seulement). Override allowlist : `localStorage.clefkey_api_base`.
+
+Backlog ouvert : [RESTE.md](./RESTE.md).
